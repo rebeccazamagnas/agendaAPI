@@ -1,12 +1,15 @@
 package br.com.contiinformatica.configurations;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import br.com.contiinformatica.dtos.TarefaRequestDto;
+import br.com.contiinformatica.dtos.TarefaRespondeDto;
 import br.com.contiinformatica.entities.Tarefa;
 
 @Configuration
@@ -29,7 +32,25 @@ public class ModelMapperConfiguration {
                 }
             }).map(src -> src, Tarefa::setDataHora);
         });
+        
+      //Mapeamento para copiar os dados de 'Tarefa' para 'TarefaResponseDto'
+        modelMapper.addMappings(new PropertyMap<Tarefa, TarefaRespondeDto>() {
+            @Override
+            protected void configure() {     
+            	
+                using(ctx -> {
+                    Date dataHora = (Date) ctx.getSource();
+                    return new SimpleDateFormat("yyyy-MM-dd").format(dataHora);
+                }).map(source.getDataHora(), destination.getData());
+
+              
+                using(ctx -> {
+                    Date dataHora = (Date) ctx.getSource();
+                    return new SimpleDateFormat("HH:mm").format(dataHora);
+                }).map(source.getDataHora(), destination.getHora());
+            }
+        });
 
         return modelMapper;
-    }
+    }	
 }

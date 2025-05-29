@@ -1,5 +1,7 @@
 package br.com.contiinformatica.controllers;
 
+import java.util.UUID;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.contiinformatica.dtos.TarefaRequestDto;
+import br.com.contiinformatica.dtos.TarefaRespondeDto;
 import br.com.contiinformatica.entities.Tarefa;
 import br.com.contiinformatica.repositories.CategoriaRepository;
 import br.com.contiinformatica.repositories.TarefaRepository;
@@ -30,22 +33,27 @@ public class TarefasController {
 	TarefaRepository tarefaRepository;
 	@Autowired
 	CategoriaRepository categoriaRepository;
+	@Autowired 
+	ModelMapper mapper;
 	
 	@PostMapping
 	@Operation (summary = "Cadastro de tarefas",
 	description = "cadastra uma tarefa no sistema")
-	public void post( @RequestBody @Valid TarefaRequestDto request ) {
+	public TarefaRespondeDto post( @RequestBody @Valid TarefaRequestDto request ) {
 		//Buscar a categoria no banco de dados através do ID
 		
 		var categoria = categoriaRepository.findById(request.getCategoriaId())
 				.orElseThrow(() -> new IllegalArgumentException 
 						("Categoria não encontrada. Verifique o ID informado"));
 				
-		//Instanciando a classe do ModelMapper
-		var mapper = new ModelMapper();
-		
+	
 		//copiando os dados do objeto request para a entidade tarefa
 		var tarefa = mapper.map(request, Tarefa.class);
+		tarefa.setId(UUID.randomUUID()); 
+		tarefaRepository.save(tarefa);
+		
+		//retornar os dados da tarefa cadastrada
+		return mapper.map(tarefa, TarefaRespondeDto.class);
 		
 		
 	}

@@ -22,14 +22,15 @@ public class CategoriasController {
 
 	//Instanciando o repositório de castegorias de forma automática
 	@Autowired CategoriaRepository categoriaRepository;
+
+	@Autowired ModelMapper mapper;
 	
 	@GetMapping
 	@Operation(summary = "Consulta de categorias", 
 	  	   description = "Retorna todas as categorias cadastradas no sistema.")
 	public List<CategoriaResponseDto> get() {
 		
-		//criar uma instancia da classe model modelMapper
-		var mapper = new ModelMapper();
+		
 		
 		
 		//consultar as categorias cadastradas no banco de dados
