@@ -1,11 +1,13 @@
 package br.com.contiinformatica.controllers;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.contiinformatica.dtos.CategoriaResponseDto;
 import br.com.contiinformatica.dtos.TarefaRequestDto;
 import br.com.contiinformatica.dtos.TarefaRespondeDto;
 import br.com.contiinformatica.entities.Tarefa;
@@ -110,6 +111,23 @@ public class TarefasController {
 					.stream() 
 					.map(tarefa -> mapper.map(tarefa, TarefaRespondeDto.class))
 					.collect(Collectors.toList());
+				
+				
+	}
+	
+	@GetMapping("/{dataInicio}/{dataFim}")
+	@Operation(summary = "Consulta tarefas por período",
+	           description = "Retorna as tarefas cadastradas entre duas datas.")
+	public List<TarefaRespondeDto> getPorPeriodo(
+	    @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dataInicio,
+	    @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dataFim
+	) {
+	    var tarefas = tarefaRepository.findByDataHoraBetween(dataInicio, dataFim);
+	    
+	    return tarefas
+	        .stream()
+	        .map(tarefa -> mapper.map(tarefa, TarefaRespondeDto.class))
+	        .collect(Collectors.toList());
 	}
 	
 

@@ -13,8 +13,8 @@ public class CoreConfiguration implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		
 		registry.addMapping("/**")
-			.allowedOrigins("http://localhost:4200")
-			.allowedMethods("POST", "PUT", "DELETE", "GET")
+			.allowedOrigins("*")
+			.allowedMethods("POST", "PUT", "DELETE", "GET", "OPTIONS")
 			.allowedHeaders("*");
 	}
 }
