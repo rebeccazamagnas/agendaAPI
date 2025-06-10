@@ -85,7 +85,7 @@ public class TarefasController {
 				return mapper.map(tarefa, TarefaRespondeDto.class);
 	}
 	
-	@DeleteMapping
+	@DeleteMapping("{id}")
 	@Operation (summary = "Deleção de tarefas",
 				description = "Deleta uma tarefa existente no sistema")
 	public TarefaRespondeDto delete(@PathVariable UUID id) {
@@ -129,6 +129,24 @@ public class TarefasController {
 	        .map(tarefa -> mapper.map(tarefa, TarefaRespondeDto.class))
 	        .collect(Collectors.toList());
 	}
+	
+	@GetMapping("{id}")
+	@Operation (summary = "Consulta tarefa por id",
+	description = "Retorna a consulta por id para que seja editada")
+	public TarefaRespondeDto getById(@PathVariable UUID id)
+	{
+		var tarefa = tarefaRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Tarefa não encontrada"));
+			
+		//retornar os dados da tarefa
+		
+		return mapper.map(tarefa, TarefaRespondeDto.class);
+		
+		
+		
+	}	
+	
+	
 	
 
 }
